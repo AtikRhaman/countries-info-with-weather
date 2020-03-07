@@ -4,35 +4,51 @@ import "../../scss/main.scss";
 class Weather extends React.Component {
   constructor(props) {
     super(props);
-    console.log("I am from cosntractor");
     this.state = {
-      temperature: "",
       weatherData: "",
       temp: "",
       feelsLike: "",
-      city: "",
-      country: "",
-      tempCel: ""
+      city: "Dhaka",
+      tempCel: "",
+      search: "",
+      atik: "",
+      display: ""
     };
   }
 
-  componentDidMount() {
-    let url =
-      "http://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=63e17b0572ea636e8f4993951d521c05";
-    fetch(url)
+  fatchingAPI = () => {
+
+    
+    let weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.state.city}&appid=ab80deeb379a89ca62095db2233caa4b`;
+    fetch(weatherUrl)
       .then(response => response.json())
       .then(weatherData => {
         this.setState({
           weatherData: weatherData,
-          temp: weatherData.list[0].main.temp,
-          feelsLike: weatherData.list[0].main.feels_like,
-          city: weatherData.city.name,
-          country: weatherData.city.country
+          temp: weatherData.main.temp,
+          feelsLike: weatherData.main.feels_like,
+          city: weatherData.name,
+          country: weatherData.sys.country
         });
       });
+  };
+
+  handleChange = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value, city: value });
+  };
+
+  componentDidMount() {
+    this.fatchingAPI();
   }
-  componentDidUpdate() {}
-  componentWillUnmount() {}
+
+  componentDidUpdate(prevProps, prevState) {}
+
+  handleSubmit = e => {
+    this.setState({ display: this.state.search });
+    e.preventDefault();
+    this.fatchingAPI();
+  };
 
   render() {
     const tempInCelsius = x => {
@@ -42,17 +58,30 @@ class Weather extends React.Component {
     };
     const temp = tempInCelsius(this.state.temp);
     const feelsLike = tempInCelsius(this.state.feelsLike);
-    // console.log(this.state.weatherData);
-    // console.log(this.state.temp);
-    // console.log(this.state.feelsLike);
-    // console.log(this.state.country);
     return (
       <div className="weather_container">
         <div className="weather">
+          <form onSubmit={this.handleSubmit}>
+            <div>
+              <input
+                type="text"
+                name="search"
+                value={this.state.search}
+                onChange={this.handleChange}
+                placeholder="search"
+              />
+            </div>
+            <button>Search</button>
+          </form>
           <h2>Temp: {temp}</h2>
           <h2>Feels like: {feelsLike}</h2>
-          <h2>City: {this.state.city}</h2>
-          <h2>{this.state.temperature}</h2>
+          {this.state.display ? (
+            <h2>City: {this.state.display}</h2>
+          ) : (
+            <h2>City: {this.state.city}</h2>
+          )}
+
+          <h2>Atik: {this.state.atik}</h2>
         </div>
       </div>
     );

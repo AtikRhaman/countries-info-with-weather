@@ -4,7 +4,6 @@ import "../../scss/main.scss";
 class Country extends Component {
   constructor(props) {
     super(props);
-    console.log("I am from cosntractor");
     this.state = {
       countries: [],
       name: "",
@@ -27,6 +26,7 @@ class Country extends Component {
   componentWillUnmount() {}
 
   render() {
+    console.log(this.state.countries);
     const { countries } = this.state;
     const countryList = countries.map((country, i) => (
       <div className="country" key={country.name}>
@@ -42,17 +42,3 @@ class Country extends Component {
   }
 }
 export default Country;
-
-// const Country = () => {
-//   return (
-// <div class="country">
-//   <h2>Zimbabwe</h2>
-//   <p>Capital : Harare</p>
-//   <p>Population : 14240168</p>
-//   <p>Region : Africa</p>
-//   <p>Languages : English, Shona, Northern Ndebele</p>
-// </div>
-//   );
-// };
-
-// export default Country;
